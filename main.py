@@ -50,7 +50,7 @@ def GUI_getinput(test_string):
 
     screen.title("Type and click Enter button")
 
-    screen.geometry("500x400")
+    screen.geometry("665x470")
 
     screen.config(bg="dim grey")
 
