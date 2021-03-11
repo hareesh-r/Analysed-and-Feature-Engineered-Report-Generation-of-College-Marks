@@ -1194,99 +1194,172 @@ def generate_excel(excel_file_name):
 myList = []
 
 for i in os.listdir():
-    
+
     if (i.startswith("6") or i.startswith("8") or i.startswith("1") or i.startswith("2") or i.startswith("4") or i.startswith("3") or i.startswith("5") or i.startswith("7")) and "UNIV" not in i:
-        
+
         myList.append(i)
-        
+
 for i in myList:
-    
+
     generate_excel(i)
-    
+
     print("\nGenerating excel for "+str(i)+" ...\n")
 
 
 print("Splitting done")
 
 #!pip install pandas
+
 #!pip install xlrd==1.2.0
+
 #!pip install xlutils
+
 #!pip install import_ipynb
+
 # import Excel_Generator
+
 #!pip install pandas
+
 #!pip install xlrd==1.2.0
+
 #!pip install xlutils
+
 #!pip install import_ipynb
+
 import pandas as pd
+
 #import import_ipynb
+
 #import Excel_Generator
 
 def analyze_100(excel_file_name):
+
     df_Paper = pd.read_excel(excel_file_name)
+
     df_Paper.head()
 
     column_names = df_Paper.columns[2:]
+
     total_no_students = len(df_Paper.loc[1:, 1])
+
     whole_data = []
+
     for col_name in column_names[:-1]:
+
         temp = []
+
         attended = 0
+
         sixty_percent_2m = 0
+
         sixty_percent_13m = 0
+
         sixty_percent_16m = 0
 
         for i in df_Paper.loc[1:, col_name]:
+
             temp_data = []
+
             temp.append(i)
+
             flag = 0
+
             try:
+
                 i = int(i)
+
                 flag = 1
+
             except:
+
                 flag = 0
+
                 pass
+
             if flag == 1:
+
                 i = int(i)
+
                 if i > 0:
+
                     attended += 1
+
                 try:
+
                     if col_name <= 10:
+
                         if i > 1:
+
                             sixty_percent_2m += 1
+
                     elif col_name == 16 or col_name == '16a' or col_name == '16b':
+
                         if i >= 9:
+
                             sixty_percent_16m += 1
+
                 except:
+
                     if int(str(col_name)[:2]) >= 11 and int(str(col_name)[:2]) <= 15:
+
                         if i > 7:
+
                             sixty_percent_13m += 1
+
                     elif col_name == 16 or col_name == '16a' or col_name == '16b':
+
                         if i >= 9:
+
                             sixty_percent_16m += 1
+
         try:
+
             if col_name <= 10:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_2m)
+
                 temp_data.append(sixty_percent_2m/attended*100)
+
             else:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_16m)
+
                 temp_data.append(sixty_percent_16m/attended*100)
+
         except:
+
             if int(str(col_name)[:2]) >= 11 and int(str(col_name)[:2]) <= 15:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_13m)
+
                 temp_data.append(sixty_percent_13m/attended*100)
+
             else:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_16m)
+
                 temp_data.append(sixty_percent_16m/attended*100)
+
         whole_data.append(temp_data)
+
     from xlrd import open_workbook
+
     from xlutils.copy import copy
 
     rb = open_workbook(excel_file_name)
@@ -1298,82 +1371,148 @@ def analyze_100(excel_file_name):
     i = 0
 
     for myRow in range(total_no_students+3, total_no_students+7):
+
         j = 0
+
         for myCol in range(2, 23):
+
             s.write(myRow, myCol, whole_data[j][i])
+
             j += 1
+
         i += 1
 
+
     s.write(total_no_students+4, 0, "Number of students attempted")
+
     s.write(total_no_students+5, 0, "Number of Students Scored >= 60% of Marks")
+
     s.write(total_no_students+6, 0,
+
             "Percentage of Students Scored >= 60% of Marks")
+
     s.write(total_no_students+7, 0,
+
             "Average number of students scored >=60% marks")
+
     s.write(total_no_students+8, 0, "CO Attainment Level")
+
     wb.save(excel_file_name)
 
 
+
 def analyze_without_c_100(excel_file_name):
+
     df_Paper = pd.read_excel(excel_file_name)
+
     df_Paper.head()
 
     column_names = df_Paper.columns[2:]
+
     total_no_students = len(df_Paper.loc[1:, 1])
+
     whole_data = []
+
     for col_name in column_names[:-1]:
+
         temp = []
+
         attended = 0
+
         sixty_percent_2m = 0
+
         sixty_percent_16m = 0
 
         for i in df_Paper.loc[1:, col_name]:
+
             temp_data = []
             temp.append(i)
             flag = 0
+
             try:
+
                 i = int(i)
+
                 flag = 1
+
             except:
+
                 flag = 0
+
                 pass
+
             if flag == 1:
+
                 i = int(i)
+
                 if i > 0:
+
                     attended += 1
+
                 try:
+
                     if col_name <= 10:
+
                         if i > 1:
+
                             sixty_percent_2m += 1
+
                 except:
+
                     if int(str(col_name)[:2]) >= 11 and int(str(col_name)[:2]) <= 16:
+
                         if i >= 9:
+
                             sixty_percent_16m += 1
+
         try:
+
             if col_name <= 10:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_2m)
+
                 temp_data.append(sixty_percent_2m/attended*100)
+
             else:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_16m)
+
                 temp_data.append(sixty_percent_16m/attended*100)
+
         except:
+
             if int(str(col_name)[:2]) >= 11 and int(str(col_name)[:2]) <= 15:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_16m)
+
                 temp_data.append(sixty_percent_16m/attended*100)
+
             else:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_16m)
+
                 temp_data.append(sixty_percent_16m/attended*100)
+
         whole_data.append(temp_data)
 
     from xlrd import open_workbook
+
     from xlutils.copy import copy
 
     rb = open_workbook(excel_file_name)
@@ -1385,98 +1524,180 @@ def analyze_without_c_100(excel_file_name):
     i = 0
 
     for myRow in range(total_no_students+3, total_no_students+7):
+
         j = 0
+
         for myCol in range(2, 22):
+
             s.write(myRow, myCol, whole_data[j][i])
+
             j += 1
+
         i += 1
 
     s.write(total_no_students+4, 0, "Number of students attempted")
+
     s.write(total_no_students+5, 0, "Number of Students Scored >= 60% of Marks")
+
     s.write(total_no_students+6, 0,
+
             "Percentage of Students Scored >= 60% of Marks")
+
     s.write(total_no_students+7, 0,
+
             "Average number of students scored >=60% marks")
+
     s.write(total_no_students+8, 0, "CO Attainment Level")
+
     wb.save(excel_file_name)
 
 
 def analyze_60_1(excel_file_name):
+
     df_Paper = pd.read_excel(excel_file_name)
+
     df_Paper.head()
 
-    column_names = df_Paper.columns[2:]     
+    column_names = df_Paper.columns[2:] 
+
     total_no_students = len(df_Paper.loc[1:,1])
+
     whole_data = []
+
     for col_name in column_names[:-1]:
+
         temp = []
+
         attended = 0
+
         sixty_percent_2m = 0
+
         sixty_percent_13m = 0
+
         sixty_percent_16m = 0
 
         for i in df_Paper.loc[1:,col_name]:
+
             temp_data = []
+
             temp.append(i)
+
             flag =0
+
             try:
+
                 i = int(i)
+
                 flag = 1
+
             except:
+
                 flag = 0
+
                 pass
+
             if flag == 1:
+
                 i = int(i)
+
                 if i > 0:
+
                     attended+=1
+
                 try:
+
                     if col_name <= 10:
+
                         if i > 1:
+
                             sixty_percent_2m+=1
+
                     elif col_name == 13 or col_name =='13a'or col_name == '13b':
+
                         if i>=5:
+
                             sixty_percent_13m+=1
+
                 except:
+
                     if int(str(col_name)[:2]) >= 11 and int(str(col_name)[:2]) <=12:
+
                         if i > 9:
+
                             sixty_percent_16m+=1
+
                     elif col_name == 13 or col_name =='13a'or col_name == '13b':
+
                         if i >= 5:
+
                             sixty_percent_13m+=1
+
         try:
+
             if col_name <= 10:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_2m)
+
                 temp_data.append(sixty_percent_2m/attended*100)
+
             elif int(str(col_name)[:2]) >= 11 and int(str(col_name)[:2]) <=12:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_16m)
+
                 temp_data.append(sixty_percent_16m/attended*100)
+
             else:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_13m)
+
                 temp_data.append(sixty_percent_13m/attended*100)
+
         except:
+
             if int(str(col_name)[:2]) >= 11 and int(str(col_name)[:2]) <=12:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_16m)
+
                 temp_data.append(sixty_percent_16m/attended*100)
+
             elif int(str(col_name)[:2]) >= 11 and int(str(col_name)[:2]) <=12:
                 temp_data.append(col_name)
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_16m)
+
                 temp_data.append(sixty_percent_16m/attended*100)
+
             else:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_13m)
+
                 temp_data.append(sixty_percent_13m/attended*100)
+
         whole_data.append(temp_data)
+
     from xlrd import open_workbook
+
     from xlutils.copy import copy
 
     rb = open_workbook(excel_file_name)
@@ -1488,81 +1709,151 @@ def analyze_60_1(excel_file_name):
     i = 0
 
     for myRow in range(total_no_students+3,total_no_students+7):
+
         j = 0
+
         for myCol in range(2,18):
+
             s.write(myRow,myCol,whole_data[j][i])
+
             j+=1
+
         i+=1
+
     s.write(total_no_students+4,0,"Number of students attempted")
+
     s.write(total_no_students+5,0,"Number of Students Scored >= 60% of Marks")
+
     s.write(total_no_students+6,0,"Percentage of Students Scored >= 60% of Marks")
+
     s.write(total_no_students+7,0,"Average number of students scored >=60% marks")
+
     s.write(total_no_students+8,0,"CO Attainment Level")
+
     wb.save(excel_file_name)
 
 
 def analyze_60_2(excel_file_name):
+
     df_Paper = pd.read_excel(excel_file_name)
+
     df_Paper.head()
 
-    column_names = df_Paper.columns[2:]     
+    column_names = df_Paper.columns[2:] 
+
     total_no_students = len(df_Paper.loc[1:,1])
+
+
     whole_data = []
+
     for col_name in column_names[:-1]:
+
         temp = []
+
         attended = 0
+
         sixty_percent_2m = 0
+
         sixty_percent_16m = 0
 
         for i in df_Paper.loc[1:,col_name]:
+
             temp_data = []
+
             temp.append(i)
+
             flag =0
+
             try:
+
                 i = int(i)
+
                 flag = 1
+
             except:
+
                 flag = 0
+
                 pass
+
             if flag == 1:
+
                 i = int(i)
+
                 if i > 0:
+
                     attended+=1
+
                 try:
+
                     if col_name <= 6:
+
                         if i > 1:
+
                             sixty_percent_2m+=1
+
                     elif int(str(col_name)[:1]) >= 7 and int(str(col_name)[:1]) <=9:
+
                         if i > 9:
+
                             sixty_percent_16m+=1
+
                 except:
+
                     if int(str(col_name)[:1]) >= 7 and int(str(col_name)[:1]) <=9:
+
                         if i > 9:
+
                             sixty_percent_16m+=1
+
         try:
+
             if col_name <= 6:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_2m)
+
                 temp_data.append(sixty_percent_2m/attended*100)
+
             elif int(str(col_name)[:1]) >= 7 and int(str(col_name)[:1]) <=9:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_16m)
+
                 temp_data.append(sixty_percent_16m/attended*100)
+
         except:
+
             if int(str(col_name)[:1]) >= 7 and int(str(col_name)[:1]) <=9:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_16m)
+
                 temp_data.append(sixty_percent_16m/attended*100)
+
             elif int(str(col_name)[:1]) >= 11 and int(str(col_name)[:1]) <=12:
+
                 temp_data.append(col_name)
+
                 temp_data.append(attended)
+
                 temp_data.append(sixty_percent_16m)
+
                 temp_data.append(sixty_percent_16m/attended*100)
+
         whole_data.append(temp_data)
+
     from xlrd import open_workbook
+
     from xlutils.copy import copy
 
     rb = open_workbook(excel_file_name)
@@ -1574,92 +1865,154 @@ def analyze_60_2(excel_file_name):
     i = 0
 
     for myRow in range(total_no_students+3,total_no_students+7):
+
         j = 0
+
         for myCol in range(2,14):
+
             s.write(myRow,myCol,whole_data[j][i])
+
             j+=1
+
         i+=1
+
     s.write(total_no_students+4,0,"Number of students attempted")
+
     s.write(total_no_students+5,0,"Number of Students Scored >= 60% of Marks")
+
     s.write(total_no_students+6,0,"Percentage of Students Scored >= 60% of Marks")
+
     s.write(total_no_students+7,0,"Average number of students scored >=60% marks")
+
     s.write(total_no_students+8,0,"CO Attainment Level")
+
     wb.save(excel_file_name)
 
 
 
 
 def find_splitting_type(excel_file_name):
+
     if "With Part C 100" in excel_file_name:
+
         analyze_100(excel_file_name)
+
     elif "Without Part C 100" in excel_file_name:
+
         analyze_without_c_100(excel_file_name)
+
     elif "With Part C 60 Type 1" in excel_file_name:
+
         analyze_60_1(excel_file_name)
+
     elif "Without Part C 60 Type 2" in excel_file_name:
+
         analyze_60_2(excel_file_name)
+
     print("\nAnalyzing excel "+str(excel_file_name)+" ...\n")
 
 
 myList = []
+
 for i in os.listdir():
+
     if i.startswith("With"):
+
         myList.append(i)
+
 for i in myList:
+
     find_splitting_type(i)
 
 
 #!pip install pandas
+
 #!pip install import_ipynb
+
 #!pip install random
 
 import pandas as pd
+
 #import import_ipynb
 
 
 
 exna = ""
+
 for i in os.listdir():
+
     if i.startswith("Question Number CO Mapping"):
+
         exna = i
 
 
 def get_CO_mapping(subject_name):
+
     df_CO = pd.read_excel(exna,sheet_name="Sheet1")
+
     df_CO.head()
+
     index_of_subject = 0
+
     for i in range(len(df_CO)):
+
         if str(df_CO.iloc[i,0]) == subject_name:
+
             index_of_subject = i
+
     whole_List = []
+
     for ctr in range(1,4):
+
         CO_List = []
+
         counter = 0
+
         for i in df_CO.iloc[index_of_subject+ctr,:]:
+
             if pd.isna(i):
+
                 if counter>7:
+
                     break
+
                 else:
+
                     continue
+
             CO_List.append(i)
+
             counter+=1
+
         whole_List.append(CO_List)
     
     print(whole_List)
+
     return whole_List
 
 
 def map_CO(excel_file_name):
+
     df_Paper = pd.read_excel(excel_file_name)
+
     subject_name = ""
+
     flag = 0
+
     for i in excel_file_name[-5::-1]:
+
         if i==" " and flag == 0:
+
             subject_name+=""
+
             flag = 1
+
         elif i==" " and flag == 1:
+
             subject_name = subject_name[::-1].replace(" ","/")
+
             break
+
         subject_name+=i
     
     CO_List = get_CO_mapping(subject_name)
@@ -1667,6 +2020,7 @@ def map_CO(excel_file_name):
     total_no_students = len(df_Paper.loc[1:,1])
     
     from xlrd import open_workbook
+
     from xlutils.copy import copy
 
     rb = open_workbook(excel_file_name)
@@ -1676,23 +2030,35 @@ def map_CO(excel_file_name):
     s = wb.get_sheet(0)
 
     i = 0
+
     if 'FIAT' in excel_file_name: i = 0
+
     elif 'SIAT' in excel_file_name: i = 1
+
     elif 'MODEL' in excel_file_name: i = 2
 
     for myRow in range(total_no_students+2,total_no_students+3):
+
         j = 0
+
         for myCol in range(1,len(CO_List[i])+1):
+
             s.write(myRow,myCol,CO_List[i][j])
+
             j+=1
+
 
     wb.save(excel_file_name[:-4]+".xls")
 
 
 def adjust_16m(excel_file_name):
+
     import xlrd
+
     from xlrd import open_workbook
+
     from xlutils.copy import copy
+
     from random import randint
 
     rb = open_workbook(excel_file_name)
@@ -1704,86 +2070,150 @@ def adjust_16m(excel_file_name):
     s = wb.get_sheet(0)
 
     length = 0
+
     mark = []
+
     total_mark = []
+
     for i in range(1,sh.nrows):
+
         if sh.cell_value(i, 22)=='':
+
             length = i 
+
             break
+
         mark.append(sh.cell_value(i, 22))
+
         total_mark.append(sh.cell_value(i, 23))
 
     i = 0
+
     col = 22
+
     a16,b16,a1660,b1660 = 0,0,0,0 
+
     for row in range(1,length):
+
         aORb = randint(0,1)
+
         if mark[i] == 'AB':
+
             s.write(row,col,'AB')
+
             s.write(row,col+1,'AB')
+
         elif aORb == 0:
+
             s.write(row,col,mark[i])
+
             s.write(row,col+1,0)
+
             if mark[i]>0:
+
                 a16+=1
+
             if mark[i]>9:
+
                 a1660+=1
+
         else:
+
             s.write(row,col,0)
+
             s.write(row,col+1,mark[i])
+
             if mark[i]>0:
+
                 b16+=1
+
             if mark[i]>9:
+
                 b1660+=1
                 
         s.write(row,col+2,total_mark[i])
+
         i+=1
+
     
     s.write(length+1,22,"16a")
+
     s.write(length+2,22,a16)
+
     s.write(length+3,22,a1660)
+
     s.write(length+4,22,a1660/a16*100)
+
     s.write(length+1,23,"16b")
+
     s.write(length+2,23,b16)
+
     s.write(length+3,23,b1660)
+
     s.write(length+4,23,b1660/b16*100)
+
     s.write(0,22,'16a')
+
     s.write(0,23,"16b")
+
     s.write(0,24,"Total Marks")
+
 
     wb.save(excel_file_name)
 
 
 import os
+
 myList = []
+
 for i in os.listdir():
+
     if i.startswith("With"):
+
         myList.append(i)
+
 for i in myList:
+
     if "With Part C 100" in i:
+
         adjust_16m(i)
+
     map_CO(i)
+
     print("\nMapping CO for "+str(i)+" ...\n")
 
 
 #!pip install import_ipynb
+
 #!pip install xlrd==1.2.0
+
 #!pip install xlutils
+
 #!pip install random
 
 #import import_ipynb
+
 #import CO_Mapper
+
 import pandas as pd
+
 import xlrd
+
 from xlrd import open_workbook
+
 from xlutils.copy import copy
+
 from random import randint
 
 
 import os
+
 assna= ""
+
 for i in os.listdir():
+
     if i.startswith("Assignment"):
+
         assna = i
 
 
@@ -1798,31 +2228,55 @@ def calc_CO(excel_file_name):
     s = wb.get_sheet(0)
     
     length = 0
+
     c1,c2,c3,c4,c5,c6 = [],[],[],[],[],[]
     
     for i in range(1,sh.nrows):
+
         if str(sh.cell_value(i,3)).startswith("CO"):
+
             length = int(i)
+
             break
+
     for i in range(2,sh.ncols):
+
         if str(sh.cell_value(length,i)).strip() == 'CO1':
+
             if sh.cell_value(length-3,i)!='':
+
                 c1.append(sh.cell_value(length-3,i))
+
         elif str(sh.cell_value(length,i)).strip() == 'CO2':
+
             if sh.cell_value(length-3,i)!='':
+
                 c2.append(sh.cell_value(length-3,i))
+
         elif str(sh.cell_value(length,i)).strip() == 'CO3':
+
             if sh.cell_value(length-3,i)!='':
+
                 c3.append(sh.cell_value(length-3,i))
+
         elif str(sh.cell_value(length,i)).strip() == 'CO4':
+
             if sh.cell_value(length-3,i)!='':
+
                 c4.append(sh.cell_value(length-3,i))
+
         elif str(sh.cell_value(length,i)).strip() == 'CO5':
+
             if sh.cell_value(length-3,i)!='':
+
                 c5.append(sh.cell_value(length-3,i))
+
         elif str(sh.cell_value(length,i)).strip() == 'CO6':
+
             if sh.cell_value(length-3,i)!='':
+
                 c6.append(sh.cell_value(length-3,i))
+
             
     s.write(length+1,0,'60% of CO1')
     s.write(length+2,0,'60% of CO2')
@@ -1832,188 +2286,338 @@ def calc_CO(excel_file_name):
     s.write(length+6,0,'60% of CO6')
     
     if len(c1)!=0:
+
         s.write(length+1,1,sum(c1)/len(c1))
+
         if sum(c1)/len(c1) > 70:
+
             s.write(length+1,2,3)
+
         elif sum(c1)/len(c1) > 60:
+
             s.write(length+1,2,2)
+
         else:
+
             s.write(length+1,2,1)
+
     else:
+
         s.write(length+1,1,0)
+
         s.write(length+1,2,0)
+
         
     if len(c2)!=0:
+
         s.write(length+2,1,sum(c2)/len(c2))
+
         if sum(c2)/len(c2) > 70:
+
             s.write(length+2,2,3)
+
         elif sum(c2)/len(c2) > 60:
+
             s.write(length+2,2,2)
+
         else:
+
             s.write(length+2,2,1)
+
     else:
+
         s.write(length+2,1,0)
+
         s.write(length+2,2,0)
         
         
     if len(c3)!=0:
+
         s.write(length+3,1,sum(c3)/len(c3))
+
         if sum(c3)/len(c3) > 70:
+
             s.write(length+3,2,3)
+
         elif sum(c3)/len(c3) > 60:
+
             s.write(length+3,2,2)
+
         else:
+
             s.write(length+3,2,1)
+
     else:
+
         s.write(length+3,1,0)
+
         s.write(length+3,2,0)
         
         
     if len(c4)!=0:
+
         s.write(length+4,1,sum(c4)/len(c4))
+
         if sum(c4)/len(c4) > 70:
+
             s.write(length+4,2,3)
+
         elif sum(c4)/len(c4) > 60:
+
             s.write(length+4,2,2)
+
         else:
+
             s.write(length+4,2,1)
+
     else:
+
         s.write(length+4,1,0)
+
         s.write(length+4,2,0)
         
         
     if len(c5)!=0:
+
         s.write(length+5,1,sum(c5)/len(c5))
+
         if sum(c5)/len(c5) > 70:
+
             s.write(length+5,2,3)
+
         elif sum(c5)/len(c5) > 60:
+
             s.write(length+5,2,2)
+
         else:
+
             s.write(length+5,2,1)
+
     else:
+
         s.write(length+5,1,0)
+
         s.write(length+5,2,0)
         
         
     if len(c6)!=0:
+
         s.write(length+6,1,sum(c6)/len(c6))
+
         if sum(c6)/len(c6) > 70:
+
             s.write(length+6,2,3)
+
         elif sum(c6)/len(c6) > 60:
+
             s.write(length+6,2,2)
+
         else:
+
             s.write(length+6,2,1)
+
     else:
+
         s.write(length+6,1,0)
+
         s.write(length+6,2,0)
+
     wb.save(excel_file_name)
+
     print("\nWriting Co for "+str(excel_file_name)+" ...\n")
 
+
 import os
+
 file_names = []
+
 for i in os.listdir():
+
     if i.startswith("With"):
+
         file_names.append(i)
+
 subject_names = []
+
 for i in file_names:
+
     calc_CO(i)
+
     name = ""
+
     count = 0
+
     for j in i[::-1]:
+
         if j==" ":
+
             count+=1
+
         if count==2:
+
             if name[::-1][:-4] not in subject_names:
+
                 subject_names.append(name[::-1][:-4])
+
             break
+
         name+=j
 
 
 
+
 grouped = []
+
 for i in subject_names:
+
     temp = []
+
     for j in file_names:
+
         if i in j:
+
             if j not in temp:
+
                 temp.append(j)
+
     grouped.append(temp)
 
 
 
 
 def create_CO_Sheet(excel_file_names,subject_names):
+
     c1,c2,c3,c4,c5,c6 = [],[],[],[],[],[]
+
     for excel_file_name in excel_file_names:
+
         import xlrd
+
         from xlrd import open_workbook
+
         from xlutils.copy import copy
+
         from random import randint
+
         rb = open_workbook(excel_file_name)
+
         sh = rb.sheet_by_index(0)
+
         wb = copy(rb)
+
         s = wb.get_sheet(0)
+
         
         try:
+
             if int(sh.cell_value(sh.nrows-1,1)) > 0:
+
                 c6.append(sh.cell_value(sh.nrows-1,1))
+
         except:
+
             print("Error occured cannot convert to int",sh.cell_value(sh.nrows-1,1),excel_file_name)
+
         try:
+
             if int(sh.cell_value(sh.nrows-2,1)) > 0:
+
                 c5.append(sh.cell_value(sh.nrows-2,1))
+
         except:
+
             print("Error occured cannot convert to int",sh.cell_value(sh.nrows-2,1),excel_file_name)
+
         try:
 
             if int(sh.cell_value(sh.nrows-3,1)) > 0:
+
                 c4.append(sh.cell_value(sh.nrows-3,1))
+
         except:
+
             print("Error occured cannot convert to int",sh.cell_value(sh.nrows-3,1),excel_file_name)
+
         try:
 
             if int(sh.cell_value(sh.nrows-4,1)) > 0:
+
                 c3.append(sh.cell_value(sh.nrows-4,1))
+
         except:
+
             print("Error occured cannot convert to int",sh.cell_value(sh.nrows-4,1),excel_file_name)
+
         try:
 
             if int(sh.cell_value(sh.nrows-5,1)) > 0:
+
                 c2.append(sh.cell_value(sh.nrows-5,1))
+
         except:
+
             print("Error occured cannot convert to int",sh.cell_value(sh.nrows-5,1),excel_file_name)
+
         try:
 
             if int(sh.cell_value(sh.nrows-6,1)) > 0:
+
                 c1.append(sh.cell_value(sh.nrows-6,1))
+
         except:
+
             print("Error occured cannot convert to int",sh.cell_value(sh.nrows-6,1),excel_file_name)
+
             
     return_arr = []
+
     if len(c1)>0:
+
         return_arr.append(sum(c1)/len(c1))
+
     else:
+
         return_arr.append("No")
+
     if len(c2)>0:
+
         return_arr.append(sum(c2)/len(c2))
+
     else:
         return_arr.append("No")
+
     if len(c3)>0:
+
         return_arr.append(sum(c3)/len(c3))
+
     else:
+
         return_arr.append("No")
+
     if len(c4)>0:
+
         return_arr.append(sum(c4)/len(c4))
+
     else:
+
         return_arr.append("No")
+
     if len(c5)>0:
+
         return_arr.append(sum(c5)/len(c5))
+
     else:
+
         return_arr.append("No")
+
     if len(c6)>0:
+
         return_arr.append(sum(c6)/len(c6))
+
     else:
+
         return_arr.append("No")
+
     return return_arr
 
 
@@ -2021,59 +2625,101 @@ def create_CO_Sheet(excel_file_names,subject_names):
 
 
 def get_ass(subject_name):
+
     subject_name = subject_name.replace(" ","/")
+
     df_CO = pd.read_excel(assna,sheet_name="Sheet1")
+
     df_CO.head()
+
     index_of_subject = 0
+
     for i in range(len(df_CO)):
+
         if str(df_CO.iloc[i,0]) == subject_name:
+
             index_of_subject = i
+
     assc1,assc3 = 0,0
+
     assc1 = df_CO.iloc[index_of_subject+1,2]
+
     assc3 = df_CO.iloc[index_of_subject+2,2]
+
     return (assc1,assc3)
 
 
+
 def write_final_co(subject_name):
+
     subject_name = subject_name.replace(" ","/")
+
     df_CO = pd.read_excel("Course End Survey.xlsx",sheet_name="Sheet1")
+
     df_CO.head()
+
     index_of_subject = 0
+
     for i in range(len(df_CO)):
+
         if str(df_CO.iloc[i,0]) == subject_name:
+
             index_of_subject = i
+
     arr = []
+
     for i in range(1,7):
+
         if not pd.isna(df_CO.iloc[index_of_subject+i,1]):
+
             arr.append( df_CO.iloc[index_of_subject+i,1] )
+
         else:
+
             break
+
     return arr
 
 
 
 import xlwt 
+
 from xlwt import Workbook 
+
 import os
+
 univList = []
+
 for i in os.listdir():
+
     if "UNIV" in i:
+
         univList.append(i)
 
 
+
 for i in grouped:
+
     co_arr = create_CO_Sheet(i,subject_names)
+
     sub_name = subject_names[grouped.index(i)]
+
     assc1,assc3 = get_ass(sub_name)
-    
+
+
     print("                                     CO1",
           "CO2","CO3", "CO4", "CO5", "CO6",
           sep = " "*(len(str(co_arr[0]))-3)
          )
+
     print("Before Assignment marks -->",*co_arr,sep=" ")
+
     co_arr[0] = (co_arr[0]+assc1)/2
+
     co_arr[2] = (co_arr[2]+assc3)/2
+
     print("After Assignment marks -->",*co_arr,sep=" ")
+
     wb = Workbook() 
 
     sheet1 = wb.add_sheet('Sheet 1') 
@@ -2082,44 +2728,75 @@ for i in grouped:
               'Attainment','Direct CO Attainment','Direct CO Attainment Level'
               ,'Indirect CO Attainment','Indirect CO Attainment Level',
               'Final CO Attainment','Final CO Attainment Level']
+
     
     final_co_arr = write_final_co(sub_name)
+
     ctr = 0
+
     for i in range(len(final_co_arr)):
+
         sheet1.write(i+1,7,final_co_arr[ctr])
+
         if final_co_arr[ctr] >= 60:
+
             sheet1.write(i+1,8,3)
+
         elif final_co_arr[ctr] >= 50:
+
             sheet1.write(i+1,8,2)
+
         elif final_co_arr[ctr] >= 40:
+
             sheet1.write(i+1,8,1)
+
         else:
+
             sheet1.write(i+1,8,0)
+
         ctr+=1
 
+
     for col in range(0,len(titles)):
+
         sheet1.write(0,col,titles[col])
     
     str1 = "CO" 
+
     for j in range(1,7):
+
         if co_arr[j-1]=="No":
+
             break
+
         str2 = str1+str(j)
+
         sheet1.write(j,0,str2)
+
         sheet1.write(j,1,co_arr[j-1])
+
         if int(co_arr[j-1]) >= 60:
+
             sheet1.write(j,2,3)
+
         elif int(co_arr[j-1]) >= 50:
+
             sheet1.write(j,2,2)
+
         elif int(co_arr[j-1]) >= 40:
+
             sheet1.write(j,2,1)
+
         else:
+
             sheet1.write(j,2,0)
+
     
     
     
     
     wb.save(sub_name+".xls")
+
     print("\nWriting Co Calculations for "+str(sub_name)+" ...\n")
 
 
@@ -2137,48 +2814,91 @@ import os
 
 
 
+
 def write_co_attainment(sub_name,attainment):
+
     excel_name = sub_name.replace('/',' ')+'.xls'
+
     df_Paper = pd.read_excel(excel_name)
+
     total_length = len(df_Paper.loc[:,])
+
     internal = []
+
     internal_att = []
+
     univ = []
+
     univ_att =[]
+
     for i in df_Paper.iloc[:,1]:
+
         internal.append(i)
+
     for i in df_Paper.iloc[:,2]:
+
         internal_att.append(i)
+
         univ.append(attainment)
+
         if attainment >= 60:
+
             univ_att.append(3)
+
         elif attainment >= 50:
+
             univ_att.append(2)
+
         elif attainment >= 40:
+
             univ_att.append(1)
+
         else:
+
             univ_att.append(0)
 
+
     from xlrd import open_workbook
+
     from xlutils.copy import copy
+
     rb = open_workbook(excel_name)
+
     wb = copy(rb)
+
     s = wb.get_sheet(0)
+
+
     for i in range(total_length):
+
         if attainment >= 60:
+
             s.write(i+1,4,3)
+
         elif attainment >= 50:
+
             s.write(i+1,4,2)
+
         elif attainment >= 40:
+
             s.write(i+1,4,1)
+
         else:
+
             s.write(i+1,4,0)
+
         s.write(i+1,3,attainment)
+
     for i in range(total_length):
+
         s.write(i+1,5,float(str((internal[i]*0.5)+(univ[i]*0.5))[:5]))
+
     for i in range(total_length):
+
         s.write(i+1,6,float(str((internal_att[i]*0.5)+(univ_att[i]*0.5))[:5]))
+
     wb.save(excel_name)
+
     
 
 
@@ -2186,22 +2906,36 @@ def write_co_attainment(sub_name,attainment):
 
 
 def get_sub_marks(excel_file_name):
+
     text_string = "\nEnter regulation 2017 or 2013 for "+str(excel_file_name)+"...\n"
     regulation = int(GUI_getinput(text_string))
 
+
     #regulation = int(input("\nEnter regulation 2017 or 2013 for "+str(excel_file_name)+"...\n"))
+
     df_Paper = pd.read_excel(excel_file_name)
 
-    column_names = df_Paper.columns[:]    
+
+    column_names = df_Paper.columns[:]   
+
     counter = 0
+
     for col_name in column_names:
+
         if col_name == 'NAME':
+
             continue
+
         grades = []
+
         calc = 0
+
         breakable=0
+
         for i in df_Paper.loc[1:,col_name]:
+
             breakable+=1
+
             if pd.isna(i) or i == '0' or i==0 or i==0.0 or (col_name!='S.NO' and counter == breakable):
 
                 sub_name = col_name
