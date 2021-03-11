@@ -1,52 +1,94 @@
 import os
+
 os.system('python -m pip install xlrd==1.2.0')
 
 try:
+
     import pandas
+
 except:
+
     os.system('python -m pip install pandas')
+
 try:
+
     import random
+
 except:
+
     os.system('python -m pip install random')
+
 try:
+
     import xlwt
+
 except:
+
     os.system('python -m pip install xlwt')
+
 # try:
+
 #     #import import_ipynb
+
 # except:
+
 #     #os.system('python -m pip install import_ipynb')
+
 try:
+
     import xlutils
+
 except:
+
     os.system('python -m pip install xlutils')
+
 try:
+
     import shutil
+
 except:
+
     os.system('python -m pip install shutil')
+
 try:
+
     import tkinter
+
 except:
+
     os.system("python -m pip install tkinter")
 
 
 
+
 #!pip install random
+
 #!pip install xlwt
+
 #!pip install xlrd==1.2.0
+
 from tkinter import *
+
 import tkinter.font as font
 
+
 def GUI_getinput(test_string):
+
     arr = []
+
     def func():
+
         string  = str(reg.get())
+
         arr.append(string)
+
         screen.destroy()
 
+
     global screen
+
     screen = Tk()
+
 
     screen.title("Type and click Enter button")
 
@@ -69,119 +111,216 @@ def GUI_getinput(test_string):
     btn.pack(ipady=5)
 
     screen.mainloop()
+
     return arr[-1]
 
 
 
 def split100(regNoList, nameList, markList, outputFileName):
+
     import random
 
     def splitMarks(ans, marksPartC, marksPartB, marksPartA):
+
         originalMarks = ans
+
         ans = int(ans)
 
         # Part C Marks Allocation
+
         for i in range(1):
+
+
             partCmark = random.randint(0, 15)
+
             if partCmark+marksPartC[0] > 15:
+
                 break
+
             if partCmark >= ans:
+
                 ans = partCmark
+
                 return (marksPartC, marksPartB, marksPartA)
+
             marksPartC[0] += partCmark
+
             ans -= partCmark
 
         # Part B Marks Allocation
+
         partBmark = random.randint(0, 13)
+
         for i in range(5):
+
             if partBmark+sum(marksPartB) > 65:
+
                 break
+
             if(ans-partBmark < 0):
+
                 partBmark = ans
+
                 break
+
             marksPartB[i] += partBmark
+
             ans -= partBmark
 
         # Part A Marks Allocation
+
         for i in range(10):
+
             partAmark = random.randint(0, 2)
+
             if partAmark+sum(marksPartA) > 20:
+
                 break
+
             if(ans-partAmark < 0):
+
                 partAmark = ans
+
                 break
+
             marksPartA[i] += partAmark
+
             ans -= partAmark
+
         return (marksPartA, marksPartB, marksPartC)
 
     def adjustMarks(temp, a, b, c):
+
         while True:
+
             for i in range(1):
+
                 if temp == 0:
+
                     return (a, b, c)
+
                 if c[i] < 16:
+
                     c[i] += 1
+
                     temp -= 1
+
             for j in range(5):
+
                 if temp == 0:
+
                     return (a, b, c)
+
                 if b[j] < 13:
+
                     b[j] += 1
+
                     temp -= 1
+
             for k in range(10):
+
                 if temp == 0:
+
                     return (a, b, c)
+
                 if a[k] < 2:
+
                     a[k] += 1
+
                     temp -= 1
+
         return (a, b, c)
+
     flag = 0
+
     while flag == 0:
+
         try:
+
             writeToExcel = []
+
             for i in markList:
+
                 marksPartC = [0]
+
                 marksPartB = [0 for i in range(5)]
+
                 marksPartA = [0 for i in range(10)]
 
+
                 try:
+
                     int(i)
+
                     (a, b, c) = splitMarks(i, marksPartC, marksPartB, marksPartA)
+
                     if sum(a+b+c) < int(i):
+
                         temp = int(i) - sum(a+b+c)
+
                         (a, b, c) = adjustMarks(temp, a, b, c)
+
                     writeToExcel.append(a+b+c+[int(i)])
+
                 except:
+
                     marksPartC = ['AB']
+
                     marksPartB = ['AB' for i in range(5)]
+
                     marksPartA = ['AB' for i in range(10)]
+
                     writeToExcel.append(
                         marksPartA+marksPartB+marksPartC+['AB'])
+
             flag = 1
+
         except:
+
             flag = 0
+
     temp = []
+
     for i in range(len(writeToExcel)):
+
         single = []
+
         for j in range(10):
+
             single.append(writeToExcel[i][j])
+
         for j in range(10, 15):
+
             aORb = random.randint(0, 1)
+
             if str(writeToExcel[i][j]) == 'AB':
+
                 single.append('AB')
+
                 single.append('AB')
+
             elif aORb == 0:
+
                 single.append(0)
+
                 single.append(writeToExcel[i][j])
+
             else:
+
                 single.append(writeToExcel[i][j])
+
                 single.append(0)
+
         for j in range(15, len(writeToExcel[i])):
+
             single.append(writeToExcel[i][j])
+
         temp.append(single)
 
     writeToExcel = temp
+
     import xlwt
+
     from xlwt import Workbook
 
     wb = Workbook()
@@ -189,29 +328,40 @@ def split100(regNoList, nameList, markList, outputFileName):
     sheet1 = wb.add_sheet('Sheet 1')
 
     for i in range(10):
+
         sheet1.write(0, i+2, i+1)
 
     counter = 12
 
     for i in range(11, 16):
+
         sheet1.write(0, counter, str(i)+str('a'))
+
         sheet1.write(0, counter+1, str(i)+str('b'))
+
         counter += 2
 
     sheet1.write(0, counter, 16)
 
     for i in range(len(temp)):
+
         sheet1.write(i+1, 0, nameList[i])
 
     for i in range(len(temp)):
+
         sheet1.write(i+1, 1, str(regNoList[i]))
 
     for i in range(len(temp)):
+
         for j in range(len(temp[i])):
             try:
+
                 sheet1.write(i+1, j+2, int(temp[i][j]))
+
             except:
+
                 sheet1.write(i+1, j+2, str(temp[i][j]))
+
 
     sheet1.write(0, j+2, "Total Marks")
 
@@ -222,88 +372,158 @@ def split100(regNoList, nameList, markList, outputFileName):
 def split100noC(regNoList, nameList, markList, outputFileName):
     import random
 
+
     def splitMarks(ans, marksPartB, marksPartA):
+
         originalMarks = ans
+
         ans = int(ans)
 
         # Part B Marks Allocation
+
         partBmark = random.randint(0, 16)
+
         for i in range(5):
+
             if partBmark+sum(marksPartB) > 65:
+
                 break
+
             if(ans-partBmark < 0):
+
                 partBmark = ans
+
                 break
+
             marksPartB[i] += partBmark
+
             ans -= partBmark
 
         # Part A Marks Allocation
+
         for i in range(10):
+
             partAmark = random.randint(0, 2)
+
             if partAmark+sum(marksPartA) > 20:
+
                 break
+
             if(ans-partAmark < 0):
+
                 partBmark = ans
+
                 break
+
             marksPartA[i] += partAmark
+
             ans -= partAmark
+
         return (marksPartA, marksPartB)
 
+
     def adjustMarks(temp, a, b,):
+
         while True:
+
             for j in range(5):
+
                 if temp == 0:
+
                     return (a, b)
+
                 if b[j] < 16:
+
                     b[j] += 1
+
                     temp -= 1
+
             for k in range(10):
+
                 if temp == 0:
+
                     return (a, b)
+
                 if a[k] < 2:
+
                     a[k] += 1
+
                     temp -= 1
+
         return (a, b)
+
     writeToExcel = []
 
     for i in markList:
+
         marksPartB = [0 for i in range(5)]
+
         marksPartA = [0 for i in range(10)]
 
         try:
+
             int(i)
+
             (a, b) = splitMarks(i, marksPartB, marksPartA)
+
             if sum(a+b) < int(i):
+
                 temp = int(i) - sum(a+b)
+
                 (a, b) = adjustMarks(temp, a, b)
+
             writeToExcel.append(a+b+[int(i)])
+
         except:
+
             marksPartB = ['AB' for i in range(5)]
+
             marksPartA = ['AB' for i in range(10)]
+
             writeToExcel.append(marksPartA+marksPartB+['AB'])
 
     temp = []
+
     for i in range(len(writeToExcel)):
+
         single = []
+
         for j in range(10):
+
             single.append(writeToExcel[i][j])
+
         for j in range(10, 15):
+
             aORb = random.randint(0, 1)
+
             if str(writeToExcel[i][j]) == 'AB':
+
                 single.append('AB')
+
                 single.append('AB')
+
             elif aORb == 0:
+
                 single.append(0)
+
                 single.append(writeToExcel[i][j])
+
             else:
+
                 single.append(writeToExcel[i][j])
+
                 single.append(0)
+
         for j in range(15, len(writeToExcel[i])):
+
             single.append(writeToExcel[i][j])
+
         temp.append(single)
 
     writeToExcel = temp
+
     import xlwt
+
     from xlwt import Workbook
 
     wb = Workbook()
@@ -311,26 +531,40 @@ def split100noC(regNoList, nameList, markList, outputFileName):
     sheet1 = wb.add_sheet('Sheet 1')
 
     for i in range(10):
+
         sheet1.write(0, i+2, i+1)
+
     counter = 12
+
     for i in range(11, 16):
+
         sheet1.write(0, counter, str(i)+str('a'))
+
         sheet1.write(0, counter+1, str(i)+str('b'))
+
         counter += 2
+
     sheet1.write(0, counter, "Total Marks")
 
     for i in range(len(temp)):
+
         sheet1.write(i+1, 0, nameList[i])
 
     for i in range(len(temp)):
+
         sheet1.write(i+1, 1, str(regNoList[i]))
 
     for i in range(len(temp)):
+
         for j in range(len(temp[i])):
             try:
+
                 sheet1.write(i+1, j+2, int(temp[i][j]))
+
             except:
+
                 sheet1.write(i+1, j+2, str(temp[i][j]))
+
 
     fileName = "Without Part C 100 "+str(outputFileName)+".xls"
     wb.save(fileName)
@@ -339,137 +573,240 @@ def split100noC(regNoList, nameList, markList, outputFileName):
 def split60_1(regNoList,nameList,markList,outputFileName):
     import random
 
+
     def splitMarks(ans,marksPartC,marksPartB,marksPartA):
         originalMarks = ans
+
         ans = int(ans)
         
         ##Part C marks Allocation
+
         for i in range(1):
+
             partCmark = random.randint(0,8)
+
             if partCmark+marksPartC[0]>8:
+
                 break
+
             if partCmark>=ans:
+
                 ans = partCmark
+
                 return (marksPartA,marksPartB,marksPartC)
+
             marksPartC[0] += partCmark
+
             ans -= partCmark
         
         
         ##Part B Marks Allocation
+
         for i in range(2):
+
             partBmark = random.randint(0,16)
+
             if partBmark+sum(marksPartB)>32:
+
                 break
+
             if(ans-partBmark < 0):
+
                 partBmark = ans
+
                 break
             marksPartB[i] += partBmark
+
             ans-=partBmark
 
         ##Part A Marks Allocation
+
         for i in range(10):
+
             partAmark = random.randint(0,2)
+
             if partAmark+sum(marksPartA)>10:
+
                 break
+
             if(ans-partAmark < 0):
+
                 partAmark = ans
+
                 break
+
             marksPartA[i] += partAmark
+
             ans-=partAmark
+
         return (marksPartA,marksPartB,marksPartC)
+
     def adjustMarks(temp,a,b,c):
+
         while True:
+
             for j in range(1):
+
                 if temp==0:
+
                     return (a,b,c)
+
                 if c[j]<8:
+
                     c[j]+=1
+
                     temp-=1
+
             for j in range(2):
+
                 if temp==0:
+
                     return (a,b,c)
+
                 if b[j]<16:
+
                     b[j]+=1
+
                     temp-=1
+
             for k in range(10):
+
                 if temp==0:
+
                     return (a,b,c)
+
                 if a[k] < 2:
+
                     a[k]+=1
+
                     temp-=1
+
         return (a,b,c)
+
     writeToExcel = []
 
     for i in markList:
+
         marksPartC = [0]
+
         marksPartB = [0 for i in range(2)]
+
         marksPartA = [0 for i in range(10)]
 
         try:
+
             int(i)
+
             (a,b,c) = splitMarks(i,marksPartC,marksPartB,marksPartA)
+
             if sum(a+b+c)<int(i):
+
                 temp = int(i) - sum(a+b+c)
+
                 (a,b,c) = adjustMarks(temp,a,b,c)
+
             writeToExcel.append(a+b+c+[int(i)])
+
         except:
+
             marksPartC = ['AB']
+
             marksPartB = ['AB' for i in range(2)]
+
             marksPartA = ['AB' for i in range(10)]
+
             writeToExcel.append(marksPartA+marksPartB+marksPartC+['AB'])
 
+
     temp=[]
+
     for i in range(len(writeToExcel)):
+
         single = []
+
         for j in range(10):
+
             single.append(writeToExcel[i][j])
+
         for j in range(10,13):
+
             aORb = random.randint(0,1)
+
             if str(writeToExcel[i][j]) == 'AB':
+
                 single.append('AB')
+
                 single.append('AB')
+
             elif aORb == 0:
+
                 single.append(0)
+
                 single.append(writeToExcel[i][j])
+
             else:
+
                 single.append(writeToExcel[i][j])
+
                 single.append(0)
+
         for j in range(13,len(writeToExcel[i])):
+
             single.append(writeToExcel[i][j])
+
         temp.append(single)
 
     writeToExcel = temp
+
     import xlwt 
+
     from xlwt import Workbook 
+
 
     wb = Workbook() 
 
     sheet1 = wb.add_sheet('Sheet 1') 
 
     for i in range(10):
+
         sheet1.write(0,i+2,i+1)
+
     counter = 12
+
     for i in range(11,14):
+
         sheet1.write(0,counter,str(i)+str('a'))
+
         sheet1.write(0,counter+1,str(i)+str('b'))
+
         counter+=2
+
     sheet1.write(0,counter,"Total Marks")
+
     
     for i in range(len(temp)):
+
         sheet1.write(i+1,0,nameList[i])
 
     for i in range(len(temp)):
+
         sheet1.write(i+1,1,str(regNoList[i]))
 
     for i in range(len(temp)):
+
         for j in range(len(temp[i])):
             try:
+
                 sheet1.write(i+1,j+2,int(temp[i][j]))
+
             except:
+
                 sheet1.write(i+1,j+2,str(temp[i][j]))
 
 
+
     fileName = "With Part C 60 Type 1 "+str(outputFileName)+".xls"
+
     wb.save(fileName)
 
 
@@ -478,88 +815,156 @@ def split60_2(regNoList,nameList,markList,outputFileName):
     import random
 
     def splitMarks(ans,marksPartC,marksPartA):
+
         originalMarks = ans
+
         ans = int(ans)
         
         ##Part C marks Allocation
+
         for i in range(3):
+
             partCmark = random.randint(0,16)
+
             if partCmark+marksPartC[0]>16:
+
                 break
+
             if partCmark>=ans:
+
                 ans = partCmark
+
                 return (marksPartA,marksPartC)
+
             marksPartC[i] += partCmark
+
             ans -= partCmark
 
         ##Part A Marks Allocation
+
         for i in range(6):
+
             partAmark = random.randint(0,2)
+
             if partAmark+sum(marksPartA)>12:
+
                 break
+
             if(ans-partAmark < 0):
+
                 partAmark = ans
+
                 break
+
             marksPartA[i] += partAmark
+
             ans-=partAmark
+
         return (marksPartA,marksPartC)
     
     def adjustMarks(temp,a,c):
+
         while True:
+
             for j in range(3):
+
                 if temp==0:
+
                     return (a,c)
+
                 if c[j]<16:
+
                     c[j]+=1
+
                     temp-=1
+
             for k in range(6):
+
                 if temp==0:
+
                     return (a,c)
+
                 if a[k] < 2:
+
                     a[k]+=1
+
                     temp-=1
+
         return (a,c)
+
     writeToExcel = []
     
     for i in markList:
+
         marksPartC = [0 for i in range(3)]
+
         marksPartA = [0 for i in range(6)]
 
+
         try:
+
             int(i)
+
             (a,c) = splitMarks(i,marksPartC,marksPartA)
+
             if sum(a+c)<int(i):
+
                 temp = int(i) - sum(a+c)
+
                 (a,c) = adjustMarks(temp,a,c)
+
             writeToExcel.append(a+c+[int(i)])
+
         except:
+
             marksPartC = ['AB' for i in range(3)]
+
             marksPartA = ['AB' for i in range(6)]
+
             writeToExcel.append(marksPartA+marksPartC+['AB'])
     
     temp=[]
+
     for i in range(len(writeToExcel)):
+
         single = []
+
         for j in range(6):
+
             single.append(writeToExcel[i][j])
+
         for j in range(6,9):
+
             aORb = random.randint(0,1)
+
             if str(writeToExcel[i][j]) == 'AB':
+
                 single.append('AB')
+
                 single.append('AB')
+
             elif aORb == 0:
+
                 single.append(0)
+
                 single.append(writeToExcel[i][j])
+
             else:
+
                 single.append(writeToExcel[i][j])
+
                 single.append(0)
+
         for j in range(9,len(writeToExcel[i])):
+
             single.append(writeToExcel[i][j])
             
         temp.append(single)
         
     writeToExcel = temp
+
     import xlwt 
+
     from xlwt import Workbook 
 
     wb = Workbook() 
@@ -567,30 +972,45 @@ def split60_2(regNoList,nameList,markList,outputFileName):
     sheet1 = wb.add_sheet('Sheet 1') 
 
     for i in range(6):
+
         sheet1.write(0,i+2,i+1)
+
     counter = 8
     
     for i in range(7,10):
+
         sheet1.write(0,counter,str(i)+str('a'))
+
         sheet1.write(0,counter+1,str(i)+str('b'))
+
         counter+=2
+
     sheet1.write(0,counter,"Total Marks")
+
     
     for i in range(len(temp)):
+
         sheet1.write(i+1,0,nameList[i])
 
     for i in range(len(temp)):
+
         sheet1.write(i+1,1,str(regNoList[i]))
 
     for i in range(len(temp)):
+
         for j in range(len(temp[i])):
             try:
+
                 sheet1.write(i+1,j+2,int(temp[i][j]))
+
             except:
+
                 sheet1.write(i+1,j+2,str(temp[i][j]))
 
 
+
     fileName = "Without Part C 60 Type 2 "+str(outputFileName)+".xls"
+
     wb.save(fileName)
 
 
@@ -608,83 +1028,140 @@ import pandas as pd
 # from Split import *
 
 exna = ""
+
 for i in os.listdir():
+
     if i.startswith("Question Number CO Mapping"):
+
         exna = i
 
 
 def generate_excel(excel_file_name):
+
     def find_splitting_type(name,t):
+
         splitting_type = 0
 
         df_CO = pd.read_excel(exna,sheet_name="Sheet1")
+
         df_CO.head()
+
         index_of_subject = 0
+
         for i in range(len(df_CO)):
+
             if str(df_CO.iloc[i,0]) == name:
+
                 index_of_subject = i
 
+
         counter = 0        
+
         for i in df_CO.iloc[index_of_subject+t,:]:
+
             if pd.isna(i):break
+
             if i == 'NIL':
+
                 splitting_type = 3
+
                 break
+
             counter+=1
         
         if counter == 7:
+
             splitting_type = 4
+
         elif counter == 17:
+
             splitting_type = 3
+
         elif counter == 21:
+
             splitting_type = 2
+
         elif counter == 23:
+
             splitting_type = 1
         
         return splitting_type
 
     df_Paper = pd.read_excel(excel_file_name)
+
     df_Paper.head()
 
     column_names =[]
+
     for i in df_Paper.columns[3:]:
-        if str(i).startswith("Unnamed"):
+
+        if str(i).startswith(
+            "Unnamed"):
+
             break
         column_names.append(i)
 
 
     nameList = []
+
     for i in range(len(df_Paper)):
+
         if not pd.isna(df_Paper.loc[i,df_Paper.columns[2]]):
+
             nameList.append(df_Paper.loc[i,df_Paper.columns[2]])
 
     regNoList = []
+
     for i in range(len(df_Paper)):
+
         if not pd.isna(df_Paper.loc[i,df_Paper.columns[1]]):
+
             try:
+
                 temp = int(df_Paper.loc[i,df_Paper.columns[1]])
+
                 regNoList.append(temp)
+
             except:
+
                 regNoList.append(str(df_Paper.loc[i,df_Paper.columns[1]]))
 
 
+
     for col_name in column_names:
+
         markList = []
+
         splitting_type = 0
+
         for i in range(len(df_Paper)):
+
             if not pd.isna(df_Paper.loc[i,col_name]):
+
                 if df_Paper.loc[i,col_name] != 'AB':
+
                     markList.append(int(df_Paper.loc[i,col_name]))
+
                 if df_Paper.loc[i,col_name] == 'AB':
+
                     markList.append(df_Paper.loc[i,col_name])
+
         if 'FIAT' in excel_file_name:
+
             t = 1
+
             splitting_type = find_splitting_type(col_name,t)
+
         elif 'SIAT' in excel_file_name:
+
             t = 2
+
             splitting_type = find_splitting_type(col_name,t)
+
         elif 'MODEL' in excel_file_name:
+
             t = 3
+
             splitting_type = find_splitting_type(col_name,t)
         
         
@@ -715,11 +1192,17 @@ def generate_excel(excel_file_name):
 
 
 myList = []
+
 for i in os.listdir():
+    
     if (i.startswith("6") or i.startswith("8") or i.startswith("1") or i.startswith("2") or i.startswith("4") or i.startswith("3") or i.startswith("5") or i.startswith("7")) and "UNIV" not in i:
+        
         myList.append(i)
+        
 for i in myList:
+    
     generate_excel(i)
+    
     print("\nGenerating excel for "+str(i)+" ...\n")
 
 
@@ -1720,40 +2203,69 @@ def get_sub_marks(excel_file_name):
         for i in df_Paper.loc[1:,col_name]:
             breakable+=1
             if pd.isna(i) or i == '0' or i==0 or i==0.0 or (col_name!='S.NO' and counter == breakable):
+
                 sub_name = col_name
+
                 if col_name in column_names[3:]:
+
                     more_than_60 = 0
+
                     if regulation == 2017:
+
+
                         for i in grades:
+
                             temp = str(i).strip()
+
                             if temp in "AA+BB+O":
+
                                 more_than_60+=1
+
                     else:
+
                         for i in grades:
+
                             temp = str(i).strip()
+
                             if temp in "SABCD":
+
                                 more_than_60+=1   
+
                     if not sub_name.startswith("Unnamed"):
+
                         write_co_attainment(sub_name, more_than_60 / (counter-1) * 100)
+
                 break
+
             if col_name in column_names[3:]:
+
                 grades.append(i)
+
             if col_name == 'S.NO':
+
+
                 counter+=1
 
 
 
 
 myList = []
+
 for i in os.listdir():
+
     if "UNIV" in i:
+
         print(i)
+
         get_sub_marks(i)
+
         print("\nCalculating university marks for "+str(i)+" ...\n")
 
 
 
+
 import os
+
 import pandas as pd
 
 
@@ -1767,49 +2279,88 @@ indir_percent  = int(GUI_getinput("Enter Indirect attainment percentage "))
 #indir_percent = int(input("Enter Indirect attainment percentage "))
 
 subject_files = []
+
 matrix_file_name = ""
+
 for i in os.listdir():
+
     if "CO PO PSO" in i:
+
         matrix_file_name  = i
+
     if "Course End" not in i and "Assignment" not in i and "UNIV" not in i and "MODEL" not in i and "FIAT" not in i and "SIAT" not in i and ".xls" in i and len(i)<25:
+
         subject_files.append(i)
 
 
 
 
+
 def write_final_co(excel_file_name):
+
     df_Paper = pd.read_excel(excel_file_name)
+
     from xlrd import open_workbook
+
     from xlutils.copy import copy
+
     rb = open_workbook(excel_file_name)
+
     wb = copy(rb)
+
     s = wb.get_sheet(0)
+
     length = len(df_Paper.loc[:,'Direct CO Attainment Level'])
+
     dir_co_att,indir_co_att = [],[]
+
     for i in df_Paper.loc[:,'Direct CO Attainment']:
+
         if pd.isna(i):
+
             break
+
         dir_co_att.append(i)
+
     for i in df_Paper.loc[:,'Indirect CO Attainment']:
+
         if pd.isna(i):
+
             break
+
         indir_co_att.append(i)
+
     final_co_att = [ ((dir_co_att[i])*dir_percent/100) + ((indir_co_att[i])*indir_percent/100)
                         for i in range(len(dir_co_att))]
     
+
     for i in range(len(dir_co_att)):
+
         s.write(i+1,9,final_co_att[i])
+
     ctr = 0
+
     for i in range(len(dir_co_att)):
+
         if final_co_att[ctr] >= 60:
+
+
             s.write(i+1,10,3)
+
         elif final_co_att[ctr] >= 50:
+
             s.write(i+1,10,2)
+
         elif final_co_att[ctr] >= 40:
+
             s.write(i+1,10,1)
+
         else:
+
             s.write(i+1,10,0)
+
         ctr+=1
+
     
     wb.save(excel_file_name)
     
@@ -1818,146 +2369,279 @@ def write_final_co(excel_file_name):
 
 
 def get_CO_mapping(subject_name):
+
     df_CO = pd.read_excel(matrix_file_name,sheet_name="Sheet1")
+
     df_CO.head()
+
     index_of_subject = 0
+
     for i in range(len(df_CO)):
+
         if str(df_CO.iloc[i,0]) == subject_name:
+
             index_of_subject = i
+
             break
+
     whole_List = []
+
     for ctr in range(1,10):
+
         CO_List = []
+
         try:
+
             for i in df_CO.iloc[index_of_subject+ctr,:]:
+
                 if pd.isna(i):
+
                     break
+
                 CO_List.append(i)
+
         except:
+
             pass
+
         if len(CO_List) <= 1 :break
+
         whole_List.append(CO_List)
+
     return whole_List
 
 
 
 
+
+
 def get_list(k,check_list,po_matrix):
+
     temp = []
+
     for i in range(len(po_matrix)):
+
         for j in range(len(po_matrix[0])):
+
             if j==k:
+
                 temp.append(po_matrix[i][j+1])
+
     return temp
 
 
 
 
+
 def write_co_tabel(excel_file_name,po_matrix,check_list):
+
     df_Paper = pd.read_excel(excel_file_name)
+
     total_length = len(df_Paper.loc[:,])
+
     from xlrd import open_workbook
+
     from xlutils.copy import copy
+
     rb = open_workbook(excel_file_name)
+
     wb = copy(rb)
+
     s = wb.get_sheet(0)
+
     length = len(df_Paper.loc[:,'Direct CO Attainment Level'])
+
     co_att = []
+
     length = 0
+
     for i in df_Paper.loc[:,'Final CO Attainment Level']:
+
         if pd.isna(i):
+
             break
+
         co_att.append(i)
+
         length+=1
+
     s.write(total_length+2,0,'CO#')
+
     s.write(total_length+2,1,'CO Attainment')
+
     s.write(total_length+5+length,0,'CO#')
+
     s.write(total_length+5+length,1,'CO Attainment')
+
     for i in range(length):
+
         s.write(total_length+3+i,0,'CO'+str(i+1))
+
         s.write(total_length+3+i,1,co_att[i])
+
         s.write(total_length+6+i+length,0,'CO'+str(i+1))
+
         s.write(total_length+6+i+length,1,co_att[i])
+
     counter = 2
+
     for i in range(len(check_list[:-3])):
+
         if check_list[i] == 1:
+
             s.write(total_length+2,counter,"Weightage")
+
             s.write(total_length+2,counter+1,"PO"+str(i+1)+" Attainment")
+
             counter+=2
+
     counter = 2
+
     for i in range(len(check_list[-3:])):
+
         if check_list[i+len(check_list[:-3])] == 1:
+
             s.write(total_length+5+length,counter,"Weightage")
+
             s.write(total_length+5+length,counter+1,"PSO"+str(i+1)+" Attainment")
+
             counter+=2
+
     col = 2
+
     row_adjustment = 0
+
     if total_length == 5:
+
         row_adjustment = 1
+
     for k in range(len(check_list[:-3])):
-        if check_list[k] == 1:        
+
+        if check_list[k] == 1:  
+
             recieved_list = get_list(k,check_list,po_matrix)
+
             ctr = 0
+
             temp_list = []
+
             last_num = 0
+
             for i in range(total_length+2,total_length+2+len(co_att)):
+
                 if recieved_list[ctr] == '-':
+
                     s.write(total_length-5+i+row_adjustment,col,'-')
+
                     s.write(total_length-5+i+row_adjustment,col+1,"-")
+
                 elif recieved_list[ctr]>=3:
+
                     s.write(total_length-5+i+row_adjustment,col,1)
+
                     s.write(total_length-5+i+row_adjustment,col+1,co_att[ctr]*1)
+
                     temp_list.append(co_att[ctr])
+
                 elif recieved_list[ctr]>=2:
+
                     s.write(total_length-5+i+row_adjustment,col,0.75)
+
                     s.write(total_length-5+i+row_adjustment,col+1,co_att[ctr]*0.75)
+
                     temp_list.append(co_att[ctr]*0.75)
+
                 elif recieved_list[ctr] >= 1:
+
                     s.write(total_length-5+i+row_adjustment,col,0.5)
+
                     s.write(total_length-5+i+row_adjustment,col+1,co_att[ctr]*0.5)
+
                     temp_list.append(co_att[ctr]*0.5)
+
                 else:
+
                     s.write(total_length-5+i+row_adjustment,col,0)
+
                     s.write(total_length-5+i+row_adjustment,col+1,0)
+
                     temp_list.append(0)
+
                 ctr+=1
+
                 last_num = i
+
             s.write(total_length-5+last_num+1+row_adjustment,col+1,sum(temp_list)/len(temp_list))
+
             col+=2
         
     col = 2
+
     row_adjustment = 0
+
     if total_length == 5:
+
         row_adjustment = 1
+
     for k in range(len(check_list[-3:])):
-        if check_list[k+len(check_list[:-3])] == 1:        
+
+        if check_list[k+len(check_list[:-3])] == 1: 
+
             recieved_list = get_list(k+len(check_list[:-3]),check_list,po_matrix)
+
             ctr = 0
+
             temp_list = []
+
             last_num = 0
+
             for i in range(total_length+5+length,total_length+5+len(co_att)+length):
+
                 if recieved_list[ctr] == '-':
+
                     s.write(total_length-5+i+row_adjustment,col,'-')
+
                     s.write(total_length-5+i+row_adjustment,col+1,"-")
+
                 elif recieved_list[ctr]>=3:
+
                     s.write(total_length-5+i+row_adjustment,col,1)
+
                     s.write(total_length-5+i+row_adjustment,col+1,co_att[ctr]*1)
+
                     temp_list.append(co_att[ctr])
+
                 elif recieved_list[ctr]>=2:
+
                     s.write(total_length-5+i+row_adjustment,col,0.75)
+
                     s.write(total_length-5+i+row_adjustment,col+1,co_att[ctr]*0.75)
+
                     temp_list.append(co_att[ctr]*0.75)
+
+
                 elif recieved_list[ctr] >= 1:
+
                     s.write(total_length-5+i+row_adjustment,col,0.5)
+
                     s.write(total_length-5+i+row_adjustment,col+1,co_att[ctr]*0.5)
+
                     temp_list.append(co_att[ctr]*0.5)
+
                 else:
+
                     s.write(total_length-5+i+row_adjustment,col,0)
+
                     s.write(total_length-5+i+row_adjustment,col+1,0)
+
                     temp_list.append(0)
+
                 ctr+=1
+
                 last_num = i
+
             s.write(total_length-5+last_num+1+row_adjustment,col+1,sum(temp_list)/len(temp_list))
+
             col+=2
             
             
@@ -1968,60 +2652,108 @@ def write_co_tabel(excel_file_name,po_matrix,check_list):
 
 
 for i in subject_files:
+
     write_final_co(i)
+
     try:
+
         excel_file_name = i
+
         temp = i.replace(" ","/")[:-4]
+
         po_matrix = get_CO_mapping(temp)
+
         print(temp,end="\n\n")
+
         print("      PO1  PO2  PO3  PO4  PO5  PO6  PO7  PO8  PO9 PO10 PO11 PO12 PSO1 PSO2  PSO")
+
         for row in po_matrix:
+
             print(*row,sep="    ")
+
         check_list = [0 for i in range(len(po_matrix[0]))]
+
         for i in range(len(po_matrix)):
+
             for j in range(1,len(po_matrix[i])):
+
                 if po_matrix[i][j]!='-':
+
                     check_list[j] = 1
+
         print("   ",*check_list[1:],sep="    ")
+
         print("\n--------------------------------------------------------------------------------\n")
+
         write_co_tabel(excel_file_name,po_matrix,check_list[1:])
+
     except:
+
         print("\n\nSkipping "+str(temp)+"...\n\nSome Error occured...\n\nPlease check the file Manually...\n\n")
+
         print("Data Skipped")
+
         print(excel_file_name)
+
         print(po_matrix,sep="\n")
+
         print(check_list[1:])
 
 
 
 
 import shutil
+
 output_files = []
+
 try:
+
     print("\n\nTrying to create Output folder...\n\n")
+
     os.makedirs("Output")
+
     print("\n\nOutput Folder created successfully...\n\n")
+
 except:
+
     print("\n\nOutput folder already exist...\n\n")
+
 for i in os.listdir():
+
     if ".xls" in i and ".xlsx" not in i:
+
         output_files.append(i)
+
 for i in output_files:
+
     print("\nMoving "+str(i)+" to Outputs folder")
+
     shutil.move(os.path.basename(i),"Output/"+str(os.path.basename(i)))
+
 input_files = []
+
 try:
+
     print("\n\nTrying to create Input folder...\n\n")
+
     os.makedirs("Input")
+
     print("\n\nInput Folder created successfully...\n\n")
+
 except:
+
     print("\n\nInput folder already exist...\n\n")
+
 for i in os.listdir():
+
     if i != "Output" and i != "main.py" and i!="Input":
+
         input_files.append(i)
 
 for i in input_files:
+
     print("\nMoving "+str(i)+" to Input folder")
+
     shutil.move(os.path.basename(i),"Input/"+str(os.path.basename(i)))
 
 
