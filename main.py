@@ -13,10 +13,10 @@ try:
     import xlwt
 except:
     os.system('python -m pip install xlwt')
-try:
-    import import_ipynb
-except:
-    os.system('python -m pip install import_ipynb')
+# try:
+#     #import import_ipynb
+# except:
+#     #os.system('python -m pip install import_ipynb')
 try:
     import xlutils
 except:
@@ -25,6 +25,42 @@ try:
     import shutil
 except:
     os.system('python -m pip install shutil')
+try:
+    import tkinter
+except:
+    os.system("python -m pip install tkinter")
+
+
+
+#!pip install random
+#!pip install xlwt
+#!pip install xlrd==1.2.0
+from tkinter import *
+
+def GUI_getinput(text_string):
+    arr = []
+    def func():
+        string  = str(reg.get())
+        arr.append(string)
+        screen.destroy()
+
+    global screen
+    screen = Tk()
+
+    screen.title("Title")
+    screen.geometry("500x400")
+    Label(text = text_string, bg = "grey" , width = "150" , height = "3" ).pack()
+    reg = Entry(screen,text = "Regulation Year")
+
+
+    reg.pack(pady = "10" , padx = "10")
+
+    btn = Button(text = "Enter", command = func)
+
+    btn.pack()
+
+    screen.mainloop()
+    return arr[-1]
 
 
 def split100(regNoList, nameList, markList, outputFileName):
@@ -553,7 +589,7 @@ def split60_2(regNoList,nameList,markList,outputFileName):
 #!pip install pandas
 #!pip install os
 
-import import_ipynb
+#import import_ipynb
 #from Split import *
 import pandas as pd
 #!pip install import_ipynb
@@ -689,7 +725,7 @@ print("Splitting done")
 #!pip install xlutils
 #!pip install import_ipynb
 import pandas as pd
-import import_ipynb
+#import import_ipynb
 #import Excel_Generator
 
 def analyze_100(excel_file_name):
@@ -1085,7 +1121,7 @@ for i in myList:
 #!pip install random
 
 import pandas as pd
-import import_ipynb
+#import import_ipynb
 
 
 
@@ -1242,7 +1278,7 @@ for i in myList:
 #!pip install xlutils
 #!pip install random
 
-import import_ipynb
+#import import_ipynb
 #import CO_Mapper
 import pandas as pd
 import xlrd
@@ -1600,7 +1636,7 @@ for i in grouped:
 #!pip install xlrd==1.2.0
 #!pip install xlutils
 #!pip install import_ipynb
-import import_ipynb
+#import import_ipynb
 #import CO_Calc
 import pandas as pd
 import os
@@ -1657,7 +1693,10 @@ def write_co_attainment(sub_name,attainment):
 
 
 def get_sub_marks(excel_file_name):
-    regulation = int(input("\nEnter regulation 2017 or 2013 for "+str(excel_file_name)+"...\n"))
+    text_string = "\nEnter regulation 2017 or 2013 for "+str(excel_file_name)+"...\n"
+    regulation = int(GUI_getinput(text_string))
+
+    #regulation = int(input("\nEnter regulation 2017 or 2013 for "+str(excel_file_name)+"...\n"))
     df_Paper = pd.read_excel(excel_file_name)
 
     column_names = df_Paper.columns[:]    
@@ -1709,8 +1748,14 @@ import pandas as pd
 
 
 
-dir_percent = int(input("Enter Direct attainment percentage "))
-indir_percent = int(input("Enter Indirect attainment percentage "))
+dir_percent = int(GUI_getinput("Enter Direct attainment percentage "))
+
+#dir_percent = int(input("Enter Direct attainment percentage "))
+
+indir_percent  = int(GUI_getinput("Enter Indirect attainment percentage "))
+
+#indir_percent = int(input("Enter Indirect attainment percentage "))
+
 subject_files = []
 matrix_file_name = ""
 for i in os.listdir():
@@ -1954,9 +1999,25 @@ for i in os.listdir():
 for i in output_files:
     print("\nMoving "+str(i)+" to Outputs folder")
     shutil.move(os.path.basename(i),"Output/"+str(os.path.basename(i)))
+input_files = []
+try:
+    print("\n\nTrying to create Input folder...\n\n")
+    os.makedirs("Input")
+    print("\n\nInput Folder created successfully...\n\n")
+except:
+    print("\n\nInput folder already exist...\n\n")
+for i in os.listdir():
+    if i != "Output" and i != "main.py" and i!="Input":
+        input_files.append(i)
 
+for i in input_files:
+    print("\nMoving "+str(i)+" to Input folder")
+    shutil.move(os.path.basename(i),"Input/"+str(os.path.basename(i)))
 
 
 print("\nProgram Executed Successfully...\n\nDownload Your Files from Output folder...\n")
+
+input("Press any key to exit")
+
 
 
