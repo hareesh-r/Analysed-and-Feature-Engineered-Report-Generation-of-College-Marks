@@ -36,8 +36,9 @@ except:
 #!pip install xlwt
 #!pip install xlrd==1.2.0
 from tkinter import *
+import tkinter.font as font
 
-def GUI_getinput(text_string):
+def GUI_getinput(test_string):
     arr = []
     def func():
         string  = str(reg.get())
@@ -47,20 +48,29 @@ def GUI_getinput(text_string):
     global screen
     screen = Tk()
 
-    screen.title("Type and Click Enter Button")
+    screen.title("Type and click Enter button")
+
     screen.geometry("500x400")
-    Label(text = text_string, bg = "dodger blue" , width = "150" , height = "3" ).pack()
-    reg = Entry(screen,text = "Regulation Year")
 
+    screen.config(bg="dim grey")
 
-    reg.pack(pady = "10" , padx = "10")
+    myFont = font.Font(weight="bold")
 
-    btn = Button(text = "Enter", command = func)
+    Label(text = test_string  , fg="white" ,font = myFont, bg = "dodger blue" , width = "150" , height = "3" ).pack()
 
-    btn.pack()
+    reg = Entry(screen,text = "Regulation Year",width="50",justify=CENTER)
+
+    reg.focus_set()
+
+    reg.pack(pady = "10" , padx = "10",ipady=5)
+
+    btn = Button(text = "Enter",width="15",fg="grey17",bg = "white", command = func)
+
+    btn.pack(ipady=5)
 
     screen.mainloop()
     return arr[-1]
+
 
 
 def split100(regNoList, nameList, markList, outputFileName):
