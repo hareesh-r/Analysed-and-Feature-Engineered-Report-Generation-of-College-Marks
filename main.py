@@ -47,9 +47,9 @@ def GUI_getinput(text_string):
     global screen
     screen = Tk()
 
-    screen.title("Title")
+    screen.title("Type and Click Enter Button")
     screen.geometry("500x400")
-    Label(text = text_string, bg = "grey" , width = "150" , height = "3" ).pack()
+    Label(text = text_string, bg = "dodger blue" , width = "150" , height = "3" ).pack()
     reg = Entry(screen,text = "Regulation Year")
 
 
