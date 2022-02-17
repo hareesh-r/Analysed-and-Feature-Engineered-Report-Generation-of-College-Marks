@@ -128,9 +128,7 @@ def split100(regNoList, nameList, markList, outputFileName):
 
         # Part C Marks Allocation
 
-        for i in range(1):
-
-
+        for _ in range(1):
             partCmark = random.randint(0, 15)
 
             if partCmark+marksPartC[0] > 15:
@@ -578,11 +576,10 @@ def split60_1(regNoList,nameList,markList,outputFileName):
         originalMarks = ans
 
         ans = int(ans)
-        
+
         ##Part C marks Allocation
 
-        for i in range(1):
-
+        for _ in range(1):
             partCmark = random.randint(0,8)
 
             if partCmark+marksPartC[0]>8:
@@ -598,8 +595,8 @@ def split60_1(regNoList,nameList,markList,outputFileName):
             marksPartC[0] += partCmark
 
             ans -= partCmark
-        
-        
+
+
         ##Part B Marks Allocation
 
         for i in range(2):
@@ -1191,13 +1188,22 @@ def generate_excel(excel_file_name):
 
 
 
-myList = []
+myList = [
+    i
+    for i in os.listdir()
+    if (
+        i.startswith("6")
+        or i.startswith("8")
+        or i.startswith("1")
+        or i.startswith("2")
+        or i.startswith("4")
+        or i.startswith("3")
+        or i.startswith("5")
+        or i.startswith("7")
+    )
+    and "UNIV" not in i
+]
 
-for i in os.listdir():
-
-    if (i.startswith("6") or i.startswith("8") or i.startswith("1") or i.startswith("2") or i.startswith("4") or i.startswith("3") or i.startswith("5") or i.startswith("7")) and "UNIV" not in i:
-
-        myList.append(i)
 
 for i in myList:
 
@@ -1274,8 +1280,6 @@ def analyze_100(excel_file_name):
 
                 flag = 0
 
-                pass
-
             if flag == 1:
 
                 i = int(i)
@@ -1292,7 +1296,7 @@ def analyze_100(excel_file_name):
 
                             sixty_percent_2m += 1
 
-                    elif col_name == 16 or col_name == '16a' or col_name == '16b':
+                    elif col_name in [16, '16a', '16b']:
 
                         if i >= 9:
 
@@ -1306,7 +1310,7 @@ def analyze_100(excel_file_name):
 
                             sixty_percent_13m += 1
 
-                    elif col_name == 16 or col_name == '16a' or col_name == '16b':
+                    elif col_name in [16, '16a', '16b']:
 
                         if i >= 9:
 
@@ -1368,20 +1372,11 @@ def analyze_100(excel_file_name):
 
     s = wb.get_sheet(0)
 
-    i = 0
+    for i, myRow in enumerate(range(total_no_students+3, total_no_students+7)):
 
-    for myRow in range(total_no_students+3, total_no_students+7):
-
-        j = 0
-
-        for myCol in range(2, 23):
+        for j, myCol in enumerate(range(2, 23)):
 
             s.write(myRow, myCol, whole_data[j][i])
-
-            j += 1
-
-        i += 1
-
 
     s.write(total_no_students+4, 0, "Number of students attempted")
 
@@ -1439,8 +1434,6 @@ def analyze_without_c_100(excel_file_name):
 
                 flag = 0
 
-                pass
-
             if flag == 1:
 
                 i = int(i)
@@ -1451,19 +1444,17 @@ def analyze_without_c_100(excel_file_name):
 
                 try:
 
-                    if col_name <= 10:
-
-                        if i > 1:
-
-                            sixty_percent_2m += 1
+                    if col_name <= 10 and i > 1:
+                        sixty_percent_2m += 1
 
                 except:
 
-                    if int(str(col_name)[:2]) >= 11 and int(str(col_name)[:2]) <= 16:
-
-                        if i >= 9:
-
-                            sixty_percent_16m += 1
+                    if (
+                        int(str(col_name)[:2]) >= 11
+                        and int(str(col_name)[:2]) <= 16
+                        and i >= 9
+                    ):
+                        sixty_percent_16m += 1
 
         try:
 
@@ -1489,25 +1480,13 @@ def analyze_without_c_100(excel_file_name):
 
         except:
 
-            if int(str(col_name)[:2]) >= 11 and int(str(col_name)[:2]) <= 15:
+            temp_data.append(col_name)
 
-                temp_data.append(col_name)
+            temp_data.append(attended)
 
-                temp_data.append(attended)
+            temp_data.append(sixty_percent_16m)
 
-                temp_data.append(sixty_percent_16m)
-
-                temp_data.append(sixty_percent_16m/attended*100)
-
-            else:
-
-                temp_data.append(col_name)
-
-                temp_data.append(attended)
-
-                temp_data.append(sixty_percent_16m)
-
-                temp_data.append(sixty_percent_16m/attended*100)
+            temp_data.append(sixty_percent_16m/attended*100)
 
         whole_data.append(temp_data)
 
@@ -1521,19 +1500,11 @@ def analyze_without_c_100(excel_file_name):
 
     s = wb.get_sheet(0)
 
-    i = 0
+    for i, myRow in enumerate(range(total_no_students+3, total_no_students+7)):
 
-    for myRow in range(total_no_students+3, total_no_students+7):
-
-        j = 0
-
-        for myCol in range(2, 22):
+        for j, myCol in enumerate(range(2, 22)):
 
             s.write(myRow, myCol, whole_data[j][i])
-
-            j += 1
-
-        i += 1
 
     s.write(total_no_students+4, 0, "Number of students attempted")
 
@@ -1594,8 +1565,6 @@ def analyze_60_1(excel_file_name):
 
                 flag = 0
 
-                pass
-
             if flag == 1:
 
                 i = int(i)
@@ -1612,7 +1581,7 @@ def analyze_60_1(excel_file_name):
 
                             sixty_percent_2m+=1
 
-                    elif col_name == 13 or col_name =='13a'or col_name == '13b':
+                    elif col_name in [13, '13a', '13b']:
 
                         if i>=5:
 
@@ -1626,7 +1595,7 @@ def analyze_60_1(excel_file_name):
 
                             sixty_percent_16m+=1
 
-                    elif col_name == 13 or col_name =='13a'or col_name == '13b':
+                    elif col_name in [13, '13a', '13b']:
 
                         if i >= 5:
 
@@ -1676,14 +1645,6 @@ def analyze_60_1(excel_file_name):
 
                 temp_data.append(sixty_percent_16m/attended*100)
 
-            elif int(str(col_name)[:2]) >= 11 and int(str(col_name)[:2]) <=12:
-                temp_data.append(col_name)
-                temp_data.append(attended)
-
-                temp_data.append(sixty_percent_16m)
-
-                temp_data.append(sixty_percent_16m/attended*100)
-
             else:
 
                 temp_data.append(col_name)
@@ -1706,19 +1667,11 @@ def analyze_60_1(excel_file_name):
 
     s = wb.get_sheet(0)
 
-    i = 0
+    for i, myRow in enumerate(range(total_no_students+3,total_no_students+7)):
 
-    for myRow in range(total_no_students+3,total_no_students+7):
-
-        j = 0
-
-        for myCol in range(2,18):
+        for j, myCol in enumerate(range(2,18)):
 
             s.write(myRow,myCol,whole_data[j][i])
-
-            j+=1
-
-        i+=1
 
     s.write(total_no_students+4,0,"Number of students attempted")
 
@@ -1774,8 +1727,6 @@ def analyze_60_2(excel_file_name):
 
                 flag = 0
 
-                pass
-
             if flag == 1:
 
                 i = int(i)
@@ -1800,11 +1751,12 @@ def analyze_60_2(excel_file_name):
 
                 except:
 
-                    if int(str(col_name)[:1]) >= 7 and int(str(col_name)[:1]) <=9:
-
-                        if i > 9:
-
-                            sixty_percent_16m+=1
+                    if (
+                        int(str(col_name)[:1]) >= 7
+                        and int(str(col_name)[:1]) <= 9
+                        and i > 9
+                    ):
+                        sixty_percent_16m+=1
 
         try:
 
@@ -1862,19 +1814,11 @@ def analyze_60_2(excel_file_name):
 
     s = wb.get_sheet(0)
 
-    i = 0
+    for i, myRow in enumerate(range(total_no_students+3,total_no_students+7)):
 
-    for myRow in range(total_no_students+3,total_no_students+7):
-
-        j = 0
-
-        for myCol in range(2,14):
+        for j, myCol in enumerate(range(2,14)):
 
             s.write(myRow,myCol,whole_data[j][i])
-
-            j+=1
-
-        i+=1
 
     s.write(total_no_students+4,0,"Number of students attempted")
 
@@ -1912,13 +1856,7 @@ def find_splitting_type(excel_file_name):
     print("\nAnalyzing excel "+str(excel_file_name)+" ...\n")
 
 
-myList = []
-
-for i in os.listdir():
-
-    if i.startswith("With"):
-
-        myList.append(i)
+myList = [i for i in os.listdir() if i.startswith("With")]
 
 for i in myList:
 
@@ -2014,11 +1952,11 @@ def map_CO(excel_file_name):
             break
 
         subject_name+=i
-    
+
     CO_List = get_CO_mapping(subject_name)
-    
+
     total_no_students = len(df_Paper.loc[1:,1])
-    
+
     from xlrd import open_workbook
 
     from xlutils.copy import copy
@@ -2039,16 +1977,11 @@ def map_CO(excel_file_name):
 
     for myRow in range(total_no_students+2,total_no_students+3):
 
-        j = 0
-
-        for myCol in range(1,len(CO_List[i])+1):
+        for j, myCol in enumerate(range(1,len(CO_List[i])+1)):
 
             s.write(myRow,myCol,CO_List[i][j])
 
-            j+=1
-
-
-    wb.save(excel_file_name[:-4]+".xls")
+    wb.save(f'{excel_file_name[:-4]}.xls')
 
 
 def adjust_16m(excel_file_name):
@@ -2164,13 +2097,7 @@ def adjust_16m(excel_file_name):
 
 import os
 
-myList = []
-
-for i in os.listdir():
-
-    if i.startswith("With"):
-
-        myList.append(i)
+myList = [i for i in os.listdir() if i.startswith("With")]
 
 for i in myList:
 
@@ -2220,24 +2147,23 @@ for i in os.listdir():
 def calc_CO(excel_file_name):
 
     rb = open_workbook(excel_file_name)
-    
+
     sh = rb.sheet_by_index(0)
-    
+
     wb = copy(rb)
 
     s = wb.get_sheet(0)
-    
-    length = 0
 
     c1,c2,c3,c4,c5,c6 = [],[],[],[],[],[]
-    
-    for i in range(1,sh.nrows):
 
-        if str(sh.cell_value(i,3)).startswith("CO"):
-
-            length = int(i)
-
-            break
+    length = next(
+        (
+            int(i)
+            for i in range(1, sh.nrows)
+            if str(sh.cell_value(i, 3)).startswith("CO")
+        ),
+        0,
+    )
 
     for i in range(2,sh.ncols):
 
@@ -2277,15 +2203,15 @@ def calc_CO(excel_file_name):
 
                 c6.append(sh.cell_value(length-3,i))
 
-            
+
     s.write(length+1,0,'60% of CO1')
     s.write(length+2,0,'60% of CO2')
     s.write(length+3,0,'60% of CO3')
     s.write(length+4,0,'60% of CO4')
     s.write(length+5,0,'60% of CO5')
     s.write(length+6,0,'60% of CO6')
-    
-    if len(c1)!=0:
+
+    if c1:
 
         s.write(length+1,1,sum(c1)/len(c1))
 
@@ -2307,8 +2233,8 @@ def calc_CO(excel_file_name):
 
         s.write(length+1,2,0)
 
-        
-    if len(c2)!=0:
+
+    if c2:
 
         s.write(length+2,1,sum(c2)/len(c2))
 
@@ -2329,9 +2255,9 @@ def calc_CO(excel_file_name):
         s.write(length+2,1,0)
 
         s.write(length+2,2,0)
-        
-        
-    if len(c3)!=0:
+
+
+    if c3:
 
         s.write(length+3,1,sum(c3)/len(c3))
 
@@ -2352,9 +2278,9 @@ def calc_CO(excel_file_name):
         s.write(length+3,1,0)
 
         s.write(length+3,2,0)
-        
-        
-    if len(c4)!=0:
+
+
+    if c4:
 
         s.write(length+4,1,sum(c4)/len(c4))
 
@@ -2375,9 +2301,9 @@ def calc_CO(excel_file_name):
         s.write(length+4,1,0)
 
         s.write(length+4,2,0)
-        
-        
-    if len(c5)!=0:
+
+
+    if c5:
 
         s.write(length+5,1,sum(c5)/len(c5))
 
@@ -2398,9 +2324,9 @@ def calc_CO(excel_file_name):
         s.write(length+5,1,0)
 
         s.write(length+5,2,0)
-        
-        
-    if len(c6)!=0:
+
+
+    if c6:
 
         s.write(length+6,1,sum(c6)/len(c6))
 
@@ -2429,13 +2355,7 @@ def calc_CO(excel_file_name):
 
 import os
 
-file_names = []
-
-for i in os.listdir():
-
-    if i.startswith("With"):
-
-        file_names.append(i)
+file_names = [i for i in os.listdir() if i.startswith("With")]
 
 subject_names = []
 
@@ -2474,11 +2394,8 @@ for i in subject_names:
 
     for j in file_names:
 
-        if i in j:
-
-            if j not in temp:
-
-                temp.append(j)
+        if i in j and j not in temp:
+            temp.append(j)
 
     grouped.append(temp)
 
@@ -2507,7 +2424,7 @@ def create_CO_Sheet(excel_file_names,subject_names):
 
         s = wb.get_sheet(0)
 
-        
+
         try:
 
             if int(sh.cell_value(sh.nrows-1,1)) > 0:
@@ -2568,10 +2485,10 @@ def create_CO_Sheet(excel_file_names,subject_names):
 
             print("Error occured cannot convert to int",sh.cell_value(sh.nrows-6,1),excel_file_name)
 
-            
+
     return_arr = []
 
-    if len(c1)>0:
+    if c1:
 
         return_arr.append(sum(c1)/len(c1))
 
@@ -2579,14 +2496,14 @@ def create_CO_Sheet(excel_file_names,subject_names):
 
         return_arr.append("No")
 
-    if len(c2)>0:
+    if c2:
 
         return_arr.append(sum(c2)/len(c2))
 
     else:
         return_arr.append("No")
 
-    if len(c3)>0:
+    if c3:
 
         return_arr.append(sum(c3)/len(c3))
 
@@ -2594,7 +2511,7 @@ def create_CO_Sheet(excel_file_names,subject_names):
 
         return_arr.append("No")
 
-    if len(c4)>0:
+    if c4:
 
         return_arr.append(sum(c4)/len(c4))
 
@@ -2602,7 +2519,7 @@ def create_CO_Sheet(excel_file_names,subject_names):
 
         return_arr.append("No")
 
-    if len(c5)>0:
+    if c5:
 
         return_arr.append(sum(c5)/len(c5))
 
@@ -2610,7 +2527,7 @@ def create_CO_Sheet(excel_file_names,subject_names):
 
         return_arr.append("No")
 
-    if len(c6)>0:
+    if c6:
 
         return_arr.append(sum(c6)/len(c6))
 
@@ -2688,15 +2605,9 @@ from xlwt import Workbook
 
 import os
 
-univList = []
+univList = [i for i in os.listdir() if "UNIV" in i]
 
-for i in os.listdir():
-
-    if "UNIV" in i:
-
-        univList.append(i)
-
-
+str1 = "CO" 
 
 for i in grouped:
 
@@ -2723,18 +2634,16 @@ for i in grouped:
     wb = Workbook() 
 
     sheet1 = wb.add_sheet('Sheet 1') 
-    
+
     titles = ['CO#','Internal','Attainment Level','University',
               'Attainment','Direct CO Attainment','Direct CO Attainment Level'
               ,'Indirect CO Attainment','Indirect CO Attainment Level',
               'Final CO Attainment','Final CO Attainment Level']
 
-    
+
     final_co_arr = write_final_co(sub_name)
 
-    ctr = 0
-
-    for i in range(len(final_co_arr)):
+    for ctr, i in enumerate(range(len(final_co_arr))):
 
         sheet1.write(i+1,7,final_co_arr[ctr])
 
@@ -2754,14 +2663,9 @@ for i in grouped:
 
             sheet1.write(i+1,8,0)
 
-        ctr+=1
-
-
-    for col in range(0,len(titles)):
+    for col in range(len(titles)):
 
         sheet1.write(0,col,titles[col])
-    
-    str1 = "CO" 
 
     for j in range(1,7):
 
@@ -2791,11 +2695,11 @@ for i in grouped:
 
             sheet1.write(j,2,0)
 
-    
-    
-    
-    
-    wb.save(sub_name+".xls")
+
+
+
+
+    wb.save(f'{sub_name}.xls')
 
     print("\nWriting Co Calculations for "+str(sub_name)+" ...\n")
 
